@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body {
+            background: url('{% static "images/paperq.jpg" %}') no-repeat center center fixed; 
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .quiz-container img.logo {
+            display: block;
+            margin: 0 auto 20px auto;
+            max-width: 150px;
+            height: auto;
+        }
+
+        .quiz-question {
+            margin-bottom: 20px;
+        }
+
+        .quiz-options {
+            list-style: none;
+            padding: 0;
+        }
+
+        .quiz-options div {
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        label.option-label {
+            display: block;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            transition: background-color 0.3s, border-color 0.3s;
+            color: #ffffff;
+        }
+
+        label.option-label.selected {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: #ffffff;
+        }
+
+        .correct {
+            background-color: rgba(40, 167, 69, 0.8) !important;
+            border-color: rgba(40, 167, 69, 1) !important;
+        }
+
+        .incorrect {
+            background-color: rgba(220, 53, 69, 0.8) !important;
+            border-color: rgba(220, 53, 69, 1) !important;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: grey;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #555555;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <img src="{% static 'images/WHITE.png' %}" alt="Logo" class="logo">
+
+        <form id="quiz-form" method="post" action="{% url 'quiz' %}">
+            {% csrf_token %}
+            <div class="quiz-question">
+                <p id="question-number"></p>
+                <div class="quiz-options">
+                    <div>
+                        <label for="option1" id="option1-label" class="option-label" data-value="1"></label>
+                    </div>
+                    <div>
+                        <label for="option2" id="option2-label" class="option-label" data-value="2"></label>
+                    </div>
+                    <div>
+                        <label for="option3" id="option3-label" class="option-label" data-value="3"></label>
+                    </div>
+                    <div>
+                        <label for="option4" id="option4-label" class="option-label" data-value="4"></label>
+                    </div>
+                </div>
+                <input type="hidden" id="question-index" name="question_index" value="1">
+                <input type="hidden" id="score" name="score" value="0">
+            </div>
+            <button id="next-question">Next</button>
+        </form>
+    </div>
+    <script id="questions_data" type="application/json">
+        {{ questions|safe }}
+    </script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let currentQuestion = 0;
+            const questions = JSON.parse(document.getElementById('questions_data').textContent);
+            const totalQuestions = questions.length;
+            const quizForm = document.getElementById('quiz-form');
+            let selectedOption = null;
+            let score = 0;
+
+            function showQuestion(index) {
+                const question = questions[index];
+                document.getElementById('question-number').textContent = `${index + 1}. ${question.question_text}`;
+                document.getElementById('option1-label').textContent = question.option1;
+                document.getElementById('option2-label').textContent = question.option2;
+                document.getElementById('option3-label').textContent = question.option3;
+                document.getElementById('option4-label').textContent = question.option4;
+                document.getElementById('question-index').value = index + 1;
+
+                const optionLabels = document.querySelectorAll('.option-label');
+                optionLabels.forEach(label => {
+                    label.classList.remove('correct', 'incorrect', 'selected');
+                    label.style.pointerEvents = 'auto';
+                });
+                selectedOption = null;
+            }
+
+            function handleAnswer() {
+                if (!selectedOption) {
+                    alert('Please select an answer.');
+                    return;
+                }
+                const selectedValue = parseInt(selectedOption.dataset.value);
+                const correctOption = questions[currentQuestion].correct_option;
+
+                console.log('Selected Value:', selectedValue);
+                console.log('Correct Option:', correctOption);
+
+                // Apply classes to highlight correct and incorrect answers
+                if (selectedValue === correctOption) {
+                    selectedOption.classList.add('correct');
+                    console.log("Marked correct.");
+                    score++;
+                } else {
+                    selectedOption.classList.add('incorrect');
+                    console.log("Marked incorrect.");
+                    document.querySelector(`[data-value="${correctOption}"]`).classList.add('correct');
+                }
+
+                // Disable further selection after answer is given
+                document.querySelectorAll('.option-label').forEach(label => {
+                    label.style.pointerEvents = 'none';
+                });
+
+                setTimeout(() => {
+                    if (currentQuestion + 1 < totalQuestions) {
+                        currentQuestion++;
+                        showQuestion(currentQuestion);
+                    } else {
+                        document.getElementById('score').value = score;
+                        quizForm.submit();
+                    }
+                }, 2000);
+            }
+
+            document.querySelectorAll('.option-label').forEach(label => {
+                label.addEventListener('click', function () {
+                    selectedOption = this;
+                    const optionLabels = document.querySelectorAll('.option-label');
+                    optionLabels.forEach(label => label.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            document.getElementById('next-question').addEventListener('click', function (event) {
+                event.preventDefault();
+                handleAnswer();
+            });
+
+            showQuestion(currentQuestion);
+        });
+    </script>
+</body>
+</html>

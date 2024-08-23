@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f7fa; /* Light grey background */
+            color: #333; /* Dark grey text */
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .header {
+            width: 100%;
+            background-color: #ffffff; /* White background */
+            padding: 10px 20px;
+            display: flex;
+            justify-content: center; /* Center the logo horizontally */
+            align-items: center;
+            border-bottom: 1px solid #ddd; /* Light grey border to separate header */
+        }
+
+        .header img {
+            max-height: 60px; /* Control the size of the logo */
+            width: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50; /* Dark blue */
+            margin: 20px 0;
+            font-size: 2rem;
+        }
+
+        .courses-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns layout */
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .course-card {
+            background-color: #ffffff; /* White background */
+            border: 1px solid #d5d8dc; /* Light grey border */
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.3s, background-color 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .course-card:hover {
+            background-color: #e8ecf1; /* Light grey hover effect */
+            transform: scale(1.05);
+        }
+
+        .course-card h2 {
+            font-size: 1.5rem;
+            color: #2c3e50; /* Dark blue */
+            margin-bottom: 10px;
+        }
+
+        .course-card p {
+            font-size: 1rem;
+            color: #555; /* Medium grey text */
+            margin-bottom: 10px;
+        }
+
+        .course-duration {
+            font-style: italic;
+            color: #555; /* Medium grey */
+            margin-top: 10px;
+        }
+
+        .learn-more {
+            background-color: #3498db; /* Blue button */
+            color: #fff;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+            cursor: pointer;
+        }
+
+        .learn-more:hover {
+            background-color: #2980b9; /* Darker blue on hover */
+            color: #ffffff;
+        }
+
+        .course-detail-section {
+            margin-top: 40px;
+            max-width: 1200px;
+            margin: 60px auto;
+            background-color: #ffffff; /* White background */
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #d5d8dc; /* Light grey border */
+            display: none; /* Initially hide all detail sections */
+        }
+
+        .course-detail-section.active {
+            display: block; /* Show the detail section when active */
+        }
+
+        .course-detail-section h2 {
+            color: #2c3e50; /* Dark blue */
+            margin-bottom: 20px;
+        }
+
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 40px;
+            font-size: 1.2rem;
+            color: #3498db; /* Blue text */
+            text-decoration: none;
+            border: 2px solid #3498db; /* Blue border */
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .back-home:hover {
+            background-color: #3498db; /* Blue background on hover */
+            color: #ffffff;
+        }
+
+        @media (max-width: 992px) {
+            .courses-container {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns for medium screens */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 10px; /* Adjust padding for smaller screens */
+            }
+
+            h1 {
+                font-size: 1.5rem; /* Adjust heading size for smaller screens */
+            }
+
+            .courses-container {
+                grid-template-columns: 1fr; /* 1 column for small screens */
+                padding: 10px; /* Adjust padding for smaller screens */
+            }
+
+            .course-card {
+                padding: 15px; /* Adjust card padding for smaller screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header img {
+                max-height: 40px; /* Smaller logo for very small screens */
+            }
+
+            .learn-more {
+                padding: 8px 12px; /* Adjust button padding for very small screens */
+            }
+        }
+
+        /* Footer Styling */
+        .footer {
+            background-color: #0d335d; /* Dark blue background */
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            width: 100%;
+            margin-top: 20px; /* Add some space between the content and footer */
+        }
+
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        function showCourseDetails(courseId) {
+            // Hide all course detail sections
+            var detailSections = document.querySelectorAll('.course-detail-section');
+            detailSections.forEach(function(section) {
+                section.classList.remove('active');
+            });
+
+            // Show the selected course detail section
+            var selectedSection = document.getElementById(courseId);
+            if (selectedSection) {
+                selectedSection.classList.add('active');
+                selectedSection.scrollIntoView({ behavior: 'smooth' }); // Scroll to the section
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <img src="{% static 'images/BLUE.PNG' %}" alt="Logo">
+    </div>
+
+    <h1>Our Courses</h1>
+
+    <!-- Grid view of courses -->
+    <div class="courses-container">
+        <div class="course-card">
+            <h2>ACCA (Association of Chartered Certified Accountants)</h2>
+            <p>Recognized globally, this course is ideal for students aiming for a career in accounting, finance, and management.</p>
+            <p class="course-duration">Duration: Typically 2-3 years, depending on prior qualifications and exemptions.</p>
+            <button class="learn-more" onclick="showCourseDetails('acca-details')">Learn More</button>
+        </div>
+        <div class="course-card">
+            <h2>CA (Chartered Accountancy)</h2>
+            <p>This is a highly regarded qualification in India for those looking to specialize in accountancy and auditing.</p>
+            <p class="course-duration">Duration: Approximately 5 years, including mandatory practical training.</p>
+            <button class="learn-more" onclick="showCourseDetails('ca-details')">Learn More</button>
+        </div>
+        <div class="course-card">
+            <h2>CMA USA (Certified Management Accountant - USA)</h2>
+            <p>Designed to enhance management and accounting skills, this course is beneficial for those seeking roles like Financial Analyst, Risk Manager, or CFO.</p>
+            <p class="course-duration">Duration: Typically 9-12 months.</p>
+            <button class="learn-more" onclick="showCourseDetails('cma-usa-details')">Learn More</button>
+        </div>
+        <div class="course-card">
+            <h2>CMA India (Certified Management Accountant - India)</h2>
+            <p>Similar to the CMA USA, this course focuses on financial management and cost accounting, tailored to the Indian business environment.</p>
+            <p class="course-duration">Duration: Varies, usually around 2-3 years.</p>
+            <button class="learn-more" onclick="showCourseDetails('cma-india-details')">Learn More</button>
+        </div>
+        <div class="course-card">
+            <h2>CS (Company Secretary)</h2>
+            <p>This course is crucial for those interested in legal compliance, corporate governance, and regulatory affairs.</p>
+            <p class="course-duration">Duration: Around 3 years, including training.</p>
+            <button class="learn-more" onclick="showCourseDetails('cs-details')">Learn More</button>
+        </div>
+        <div class="course-card">
+            <h2>ACCA + Integrated UG PG Degree</h2>
+            <p>A unique program that combines the ACCA qualification with an undergraduate and postgraduate degree, offering a comprehensive education pathway.</p>
+            <p class="course-duration">Duration: Typically 4-5 years.</p>
+            <button class="learn-more" onclick="showCourseDetails('acca-ug-pg-details')">Learn More</button>
+        </div>
+    </div>
+
+    <!-- Detailed Course Sections -->
+    <div id="acca-details" class="course-detail-section">
+        <h2>ACCA (Association of Chartered Certified Accountants) - Details</h2>
+        <p>All About ACCA</p>
+        <p>ACCA is a respected qualification granted by a globally known organisation. The full form of ACCA is Association of Chartered Certified Accountants. It is based in the UK, with influence in over 180 countries. ACCA certification is ideal for aspirants looking for a global career in accounting or finance. Choosing ACCA opens doors to advancing your career and achieving the coveted status of a chartered certified accountant within two to three years.</p>
+        <p>You can start preparing for ACCA early, soon after the 12th Grade, and build a successful career at an early age. ACCA is an inclusive program which invites young aspirants from diverse streams to learn ACCA and earn the opportunity to expand their career horizons worldwide. The qualification comprises three progressive levels: Applied Knowledge, Applied Skills, and Strategic Professional, each level having a set of exams all tied together with hands-on practical experience expectations to attain the professional qualification. This program goes the extra mile by providing flexible study choices, such as full-time, part-time, and online, to meet the diverse needs of its global student community. Moreover, the flexibility extends to exam attempts, as there's no group system hindrance.</p>
+    </div>
+
+    <div id="ca-details" class="course-detail-section">
+        <h2>CA (Chartered Accountancy) - Details</h2>
+        <p>All About CA</p>
+        <p>The CA course stands out as the supreme choice of aspiring students worldwide; numerous students and working professionals enroll for the course each year to become Chartered Accountants. The Chartered Accountancy (CA) program in India is governed by the Institute of Chartered Accountants of India (ICAI).</p>
+        <p>Chartered Accountants have numerous esteemed job prospects in India and abroad, offering attractive salary packages. As a CA, you have the flexibility to either establish your independent practice or secure positions in the financial departments of various firms and companies.</p>
+        <p>The CA course comprises three levels: Foundation, Intermediate, and Final. The Foundation level is for those entering the course after 12th grade, while graduates can directly enter the Intermediate level. The Final level includes advanced topics in accountancy, law, and finance, along with mandatory practical training.</p>
+    </div>
+
+    <div id="cma-usa-details" class="course-detail-section">
+        <h2>CMA USA (Certified Management Accountant - USA) - Details</h2>
+        <p>All About CMA USA</p>
+        <p>The Certified Management Accountant (CMA USA) is the gold standard in global management accounting provided by the Institute for Management Accountants (IMA), USA. The prestigious qualification is recognized in more than 150 countries, making the CMA USA Course a big deal worldwide.</p>
+        <p>The CMA USA curriculum covers two parts: Part 1 focuses on Financial Reporting, Planning, Performance, and Control, while Part 2 covers Financial Decision Making. The course is designed for professionals seeking to enhance their skills in financial management and strategic decision-making.</p>
+        <p>The CMA USA certification can be completed within 6-12 months, depending on your pace of study. It is ideal for those looking to advance their careers in financial management roles, such as Financial Analyst, Risk Manager, or CFO.</p>
+    </div>
+
+    <div id="cma-india-details" class="course-detail-section">
+        <h2>CMA India (Certified Management Accountant - India) - Details</h2>
+        <p>All About CMA India</p>
+        <p>The CMA India is a prestigious qualification offered by the Institute of Cost Accountants of India (ICMAI); the course enables candidates to build a career as a skilled cost and management accountant.</p>
+        <p>The CMA India course is divided into three levels: Foundation, Intermediate, and Final. Each level covers topics like cost accounting, financial management, taxation, and business laws, providing a comprehensive education in management accounting.</p>
+        <p>CMA India certification is valuable for those looking to work in cost management, budgeting, and financial analysis in Indian industries. The course duration typically ranges from 2-3 years, depending on the student's pace of study.</p>
+    </div>
+
+    <div id="cs-details" class="course-detail-section">
+        <h2>CS (Company Secretary) - Details</h2>
+        <p>All About CS</p>
+        <p>CS is a professional degree provided by the Institute of Company Secretaries of India (ICSI); the company secretary plays a pivotal role in a firm, directly managing the company's strategy and decision-making processes and ensuring that all operations align with legal, moral, and regulatory standards.</p>
+        <p>The CS course is divided into three stages: Foundation, Executive, and Professional. The Foundation course is for those entering after 12th grade, while graduates can start with the Executive program. The Professional program is the final stage, focusing on advanced legal and regulatory aspects of corporate management.</p>
+        <p>CS professionals are in demand for their expertise in corporate governance, legal compliance, and advisory roles in various companies. The course duration is around 3 years, including mandatory practical training.</p>
+    </div>
+
+    <div id="acca-ug-pg-details" class="course-detail-section">
+        <h2>ACCA + Integrated UG PG Degree - Details</h2>
+        <p>ACCA Integrated Learning with UG/PG</p>
+        <p>The ACCA + Integrated UG PG Degree program is designed to provide a competitive edge to students by combining the globally recognized ACCA qualification with an undergraduate and postgraduate degree.</p>
+        <p>This unique program allows students to pursue an ACCA qualification alongside their UG/PG studies, providing exemptions for several ACCA exams. The integrated approach ensures a comprehensive education in accounting, finance, and management, making graduates highly competitive in the global job market.</p>
+        <p>The program typically takes 4-5 years to complete, depending on the chosen UG/PG degree and the student's pace of study. It is ideal for those looking to fast-track their careers in accounting and finance.</p>
+    </div>
+
+    <a href="{% url 'home' %}" class="back-home">Back to Home</a>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        © 2024 All rights reserved with Learnfluence Private Limited
+    </div>
+</body>
+</html>

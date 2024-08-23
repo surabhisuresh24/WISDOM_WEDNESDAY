@@ -1,0 +1,22 @@
+<!-- wisdom_wed/wwq/templates/wwq/blog_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ blog.title }}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>{{ blog.title }}</h1>
+    <p>{{ blog.content }}</p>
+    <p>Week: {{ blog.week }}</p>
+    {% if blog.image %}
+        <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+    {% else %}
+        <p>No image available</p>
+    {% endif %}
+    <a href="{% url 'blog' %}">Back to Blog</a>
+</body>
+</html>

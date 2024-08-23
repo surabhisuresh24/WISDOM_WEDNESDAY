@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Your Details</title>
+    {% load static %}
+    <style>
+        /* General Styles */
+        body {
+            background-color: #f3f4f6; /* Light grey background */
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .welcome-message .highlight {
+            color: #ffa500; /* Yellow color for "Wisdom Wednesday" */
+        }
+
+        .welcome-message p {
+            font-size: 1.2em;
+            color: #777;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            display: flex;
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 800px; /* Increased width */
+            max-width: 90%;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .login-box:hover {
+            box-shadow: 0 8px 24px rgba(173, 216, 230, 0.5); /* Bluish-white hover effect */
+        }
+
+        .login-image img {
+            width: 250px; /* Increased image size */
+            height: auto;
+            margin-right: 30px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-grow: 1;
+            max-width: 400px; /* Adjusted form section width */
+        }
+
+        .logo {
+            margin-bottom: 15px; /* Slightly reduced space below logo */
+            align-self: center; /* Center the logo */
+        }
+
+        .logo img {
+            width: 120px; /* Adjusted logo size */
+            height: auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px; /* Reduced space between form elements */
+            width: 100%; /* Ensure full width of form elements */
+        }
+
+        .form-group label {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px; /* Slightly reduced padding */
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+            color: #333;
+            box-sizing: border-box; /* Ensure consistent box sizing */
+        }
+
+        .submit-button {
+            background-color: #ffa500;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-top: 10px;
+            width: auto;
+            align-self: flex-start;
+        }
+
+        .submit-button:hover {
+            background-color: #e69500;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .login-box {
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+                width: 100%;
+            }
+
+            .login-image img {
+                margin: 0 0 20px 0;
+                width: 180px; /* Adjust image size for smaller screens */
+            }
+
+            .welcome-message h1 {
+                font-size: 2em;
+            }
+
+            .login-form {
+                max-width: 100%;
+            }
+
+            .submit-button {
+                width: 100%;
+                align-self: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="welcome-message">
+            <h1>Welcome to <span class="highlight">Wisdom Wednesday</span></h1>
+            <p>Please dive in to explore</p>
+        </div>
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-image">
+                    <img src="{% static 'images/idea_2436837.png' %}" alt="Idea Image">
+                </div>
+                <div class="login-form">
+                    <!-- Logo placed inside the box above the fields -->
+                    <div class="logo">
+                        <img src="{% static 'images/BLUE.png' %}" alt="Company Logo">
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_name">Name</label>
+                            <input type="text" id="id_name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_employee_id">Employee ID</label>
+                            <div style="display: flex; align-items: center;">
+                                <input type="text" value="LA-IND-" readonly style="width: 100px; border-right: none;">
+                                <input type="text" id="id_employee_id" name="employee_id" placeholder="XXXX" required style="flex-grow: 1; border-left: none;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_department">Department</label>
+                            <select id="id_department" name="department" required>
+                                <option value="IT">IT</option>
+                                <option value="HR">HR</option>
+                                <option value="Finance">Finance</option>
+                                <option value="RM Finance">RM Finance</option>
+                                <option value="Academics">Academics</option>
+                                <option value="RM">RM</option>
+                                <option value="CC">CC</option>
+                                <option value="Online Operations">Online Operations</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="submit-button">Start Exploring</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
